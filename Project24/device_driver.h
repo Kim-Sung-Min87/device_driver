@@ -29,5 +29,6 @@ protected:
 private:
 	static const int ADDITIONAL_READ = 4;
 	static const int EMPTY_READ = 0xFF;
-    bool isSameValueRead(int result, long address);
+    void preConditionCheck(long address);
+    void postConditionCheck(int result, long address);
 };
