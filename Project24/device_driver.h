@@ -1,5 +1,13 @@
 #pragma once
 #include "flash_memory_device.h"
+#include <stdexcept>
+
+class ReadFailException : public std::exception {
+public:
+    const char* what() const noexcept override {
+        return "Read operation failed";
+    }
+};
 
 class DeviceDriver
 {
