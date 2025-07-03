@@ -12,7 +12,7 @@ public:
 
 class DeviceDriverFixture : public Test {
 public:
-	MockFlashMemoryDevice hardware;
+	NiceMock<MockFlashMemoryDevice> hardware;
 	DeviceDriver driver{ &hardware };
 
 };
@@ -27,6 +27,8 @@ TEST_F(DeviceDriverFixture, ReadFromHW) {
 }
 
 TEST_F(DeviceDriverFixture, WriteToHW) {
+	EXPECT_CALL(hardware, read(0xFF))
+		.WillOnce(Return(0xFF));
 	EXPECT_CALL(hardware, write(0xFF, 0xAB))
 		.Times(1);
 	driver.write(0xFF, 0xAB);
@@ -58,6 +60,21 @@ TEST_F(DeviceDriverFixture, ReadFromHW5TimesException) {
 		.WillRepeatedly(Return(33));
 
 	EXPECT_THROW(driver.read(0xFF), ReadFailException);
+}
+
+TEST_F(DeviceDriverFixture, WriteToHWBeforeRead) {
+	EXPECT_CALL(hardware, read(0xCC))
+		.Times(1)
+		.WillOnce(Return(0xFF));
+
+	driver.write(0xCC, 0xAB);
+}
+
+TEST_F(DeviceDriverFixture, WriteToHWNotEmpty) {
+	EXPECT_CALL(hardware, read(0xCC))
+		.WillOnce(Return(41));
+
+	EXPECT_THROW(driver.write(0xCC, 0xAB), WriteFailException);
 }
 
 int main() {

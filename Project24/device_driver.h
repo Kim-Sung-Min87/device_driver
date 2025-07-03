@@ -9,6 +9,13 @@ public:
     }
 };
 
+class WriteFailException : public std::exception {
+    public:
+    const char* what() const noexcept override {
+        return "Write operation failed";
+    }
+};
+
 class DeviceDriver
 {
 public:
@@ -20,5 +27,7 @@ protected:
     FlashMemoryDevice* m_hardware;
 
 private:
+	static const int ADDITIONAL_READ = 4;
+	static const int EMPTY_READ = 0xFF;
     bool isSameValueRead(int result, long address);
 };

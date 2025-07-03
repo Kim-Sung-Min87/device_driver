@@ -9,7 +9,7 @@ int DeviceDriver::read(long address)
     // TODO: implement this method properly
     int result = (int)(m_hardware->read(address));
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < ADDITIONAL_READ; ++i) {
         if (isSameValueRead(result, address)) continue;
         throw ReadFailException();
 	}
@@ -25,5 +25,11 @@ bool DeviceDriver::isSameValueRead(int result, long address)
 void DeviceDriver::write(long address, int data)
 {
     // TODO: implement this method
+    int result = (int)(m_hardware->read(address));
+    
+    if (result != EMPTY_READ) {
+        throw WriteFailException();
+	}
+
     m_hardware->write(address, (unsigned char)data);
 }
