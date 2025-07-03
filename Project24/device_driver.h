@@ -18,4 +18,7 @@ public:
 
 protected:
     FlashMemoryDevice* m_hardware;
+
+private:
+    bool isSameValueRead(int result, long address);
 };

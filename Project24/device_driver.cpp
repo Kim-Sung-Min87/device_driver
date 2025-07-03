@@ -8,17 +8,18 @@ int DeviceDriver::read(long address)
 {
     // TODO: implement this method properly
     int result = (int)(m_hardware->read(address));
-    int cmpResult = 0;
 
     for (int i = 0; i < 4; ++i) {
-        cmpResult = (int)(m_hardware->read(address));
-
-        if (cmpResult != result) {
-            throw ReadFailException();
-		}
+        if (isSameValueRead(result, address)) continue;
+        throw ReadFailException();
 	}
 
     return result;
+}
+
+bool DeviceDriver::isSameValueRead(int result, long address)
+{
+    return result == (int)(m_hardware->read(address));
 }
 
 void DeviceDriver::write(long address, int data)
